@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>산출 기초 계산기 1.0v</title>
     <style>
+        .wrap{
+            margin: 0 auto;
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         input{
             border: none;
         }
@@ -13,63 +20,70 @@
         }
         table{
             text-align: center;
+            margin: 50px 0;
+            width: 100%;
+        }
+        table + table{
+            margin-top: 0;
         }
         td{
             width: 100px;
+            line-height: 3em;
         }
     </style>
 </head>
 <body>
-    <table border="1">
-        <tr>
-            <td>
-                합계 금액
-            </td>
-            <td>
-                <input id="num" type="number" oninput="setUnit()">
-            </td>
-            <td rowspan="4" style="width: 40px;">
-                <button onclick="calcul()" style="height: 100px;">입력</button>
-            </td>
-        </tr>
-        <!-- <tr>
-            <td>X %</td>
-            <td>
-                <input id="x" type="number">
-            </td>
-        </tr>
-        <tr>
-            <td>Y %</td>
-            <td>
-                <input id="y" type="number">
-            </td>
-        </tr> -->
-        <tr>
-            <td>단위</td>
-            <td>
-                <input id="unit" type="number">
-            </td>
-        </tr>
-    </table>
+    <div class="wrap">
+        <table border="1">
+            <tr>
+                <td>
+                    합계 금액
+                </td>
+                <td>
+                    <input id="num" type="number" oninput="setUnit()">
+                </td>
+                <td rowspan="4" style="width: 40px;">
+                    <button onclick="calcul()" style="height: 100px;">입력</button>
+                </td>
+            </tr>
+            <tr>
+                <td>단위</td>
+                <td>
+                    <input id="unit" type="number">
+                </td>
+            </tr>
+            <!-- <tr>
+                <td>X %</td>
+                <td>
+                    <input id="x" type="number">
+                </td>
+            </tr>
+            <tr>
+                <td>Y %</td>
+                <td>
+                    <input id="y" type="number">
+                </td>
+            </tr> -->
+        </table>
 
-    <table border="1" style="margin: 50px 0;">
-        <tr>
-            <td>X</td>
-            <td>
-                <p id="result"></p>
-            </td>
-        </tr>
-        <tr>
-            <td>Y</td>
-            <td>
-                <p id="result2"></p>
-            </td>
-        </tr>
-    </table>
+        <table border="1">
+            <tr>
+                <td>X</td>
+                <td id="result" colspan="2">
+                </td>
+            </tr>
+            <tr>
+                <td>Y</td>
+                <td id="result2" colspan="2">
+                </td>
+            </tr>
+        </table>
 
-    <h3>계산 기록</h3>
-    <div id="resultDiv">
+        <h3>계산 기록</h3>
+        <div id="resultDiv"></div>
     </div>
+
+    
     <script>
         const result = document.getElementById('result');
         const result2 = document.getElementById('result2');
@@ -94,6 +108,7 @@
             document.getElementById('unit').value = unitVal;
         }
 
+        // 주석 밑 계산들만 값 수정하면 비율, 합계식 직접 작성할 수 있게 수정 가능
         function calcul(num) {
             num = document.getElementById('num').value;
             div = document.getElementById('unit').value;
@@ -102,7 +117,8 @@
             let bul = true;
             count = 0;
 
-            num2 = num / 0.47;
+            // (X:Y = 4:1), (X*0.1 + Y*0.07 = 합계) 를 적용한 계산식
+            num2 = num / (4*0.1 + 0.07);
 
             if (num2%div!=0) {
                 num2 -= num2%div;
@@ -115,6 +131,7 @@
                     num2 -= div * count;
                 }
 
+                // (X*0.1 + Y*0.07 = 합계)를 이용한 X 역산
                 num1 = ( num - (num2*0.07) ) / 0.1;
                 if (num1%div == 0){
                     bul = false;
